@@ -1,0 +1,15 @@
+[project]
+name = "kikaiken-bot"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "machinacanis", email = "hf4minecraft@163.com"},
+]
+dependencies = ["nonebot2[fastapi]>=2.4.1", "nonebot-adapter-onebot>=2.4.6", "nonebot-plugin-alconna>=0.55.1", "SQLAlchemy>=2.0.38", "langchain>=0.3.18", "langchain-community>=0.3.17", "httpx>=0.28.1", "langchain-core>=0.3.35", "langchain-deepseek>=0.1.2", "langchain-openai>=0.3.6"]
+requires-python = "==3.13.*"
+readme = "README.md"
+license = {text = "GPLv3"}
+
+
+[tool.pdm]
+distribution = false
