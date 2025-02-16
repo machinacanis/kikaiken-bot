@@ -11,50 +11,7 @@ from typing_extensions import Self
 SILICONFLOW_API_BASE = "https://api.siliconflow.cn/v1"
 
 
-class Apikey:
-    """
-    API密钥存储的基类
-    """
-    model_type: str
-    model_name: str
-    key: str
-
-    def set_type(self, model_type: str):
-        self.model_type = model_type
-
-    def set_name(self, model_name: str):
-        self.model_name = model_name
-
-    def set_key(self, key: str):
-        self.key = key
-
-
-class DeepseekApikey(Apikey):
-    """
-    Deepseek的API密钥
-    """
-    model_type: str = "deepseek"
-    model_name: str = "deepseek-chat"
-    key: str = ""
-
-    def __init__(self, key: str):
-        self.set_key(key)
-
-
-class SiliconFlowApiKey(Apikey):
-    """
-    SiliconFlow的API密钥
-    """
-    model_type: str = "siliconflow"
-    model_name: str = ""
-    key: str = ""
-
-    def __init__(self, model: str, key: str):
-        self.set_name(model)
-        self.set_key(key)
-
-
-class ChatDeepSeekOnSiliconFlow(BaseChatOpenAI):
+class ChatSiliconFlow(BaseChatOpenAI):
     model_name: str = Field(alias="model")
     """模型名称"""
     api_key: str = Field(
@@ -71,7 +28,7 @@ class ChatDeepSeekOnSiliconFlow(BaseChatOpenAI):
     @property
     def _llm_type(self) -> str:
         """Return type of chat model."""
-        return "deepseek-ai/DeepSeek-V3"
+        return "chat-siliconflow"
 
     @property
     def lc_secrets(self) -> Dict[str, str]:

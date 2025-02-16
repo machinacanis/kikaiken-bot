@@ -2,20 +2,21 @@ import datetime
 import os
 
 from nonebot import logger
-from sqlalchemy import create_engine, Engine, QueuePool
+from sqlalchemy import AsyncAdaptedQueuePool
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 
 
 class KikaikenDatabase:
-    engine: Engine
+    engine: AsyncEngine
 
-    def set_engine(self, engine: Engine):
+    def set_engine(self, engine: AsyncEngine):
         self.engine = engine
 
 
 kdb = KikaikenDatabase()
 
 
-def sqlite_connect():
+async def sqlite_connect():
     logger.info("- 初始化数据库连接")
     # 首先检查配置文件中是否包含对应的配置项，如果不存在则使用默认值
     sqlite_path = os.getenv("BACKUP_PATH", "")
@@ -29,15 +30,14 @@ def sqlite_connect():
             sqlite_path = f"kikaiken_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.kbp"
     # 通过SQLAlchemy连接数据库
     logger.debug(f"当前使用的数据库文件为：{sqlite_path}")
-    engine = create_engine(
-        f"sqlite:///{sqlite_path}",
-        poolclass=QueuePool,
+    engine = create_async_engine(
+        f"sqlite+aiosqlite:///{sqlite_path}",
+        poolclass=AsyncAdaptedQueuePool,
         pool_size=5,
         max_overflow=10,
         pool_timeout=30,
         pool_recycle=1800
     )
-    engine.connect()
     kdb.set_engine(engine)
     logger.success("Done!")
 
@@ -46,5 +46,5 @@ def get_engine():
     return kdb.engine
 
 
-def release_engine():
-    kdb.engine.dispose()
+async def release_engine():
+    await kdb.engine.dispose()
